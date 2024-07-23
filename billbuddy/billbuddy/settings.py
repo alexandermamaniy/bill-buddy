@@ -24,8 +24,12 @@ SECRET_KEY = 'django-insecure-p^dqgpd_0f(6p@pi45cdn)9j=vo3b-mht9^4-#$lo^i)d%h_w)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+TESTING = False
 
-ALLOWED_HOSTS = []
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL=True
+CORS_ALLOW_CREDENTIALS = True
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,7 +45,39 @@ INSTALLED_APPS = [
     'users',
     #THRID_APPS
     'rest_framework',
+    'corsheaders',
+    'rest_framework_simplejwt',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
+if DEBUG:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'].append(
+        'rest_framework.renderers.BrowsableAPIRenderer'
+    )
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'].append(
+        'rest_framework.authentication.SessionAuthentication'
+    )
+
+
+if TESTING:
+    REST_FRAMEWORK = {
+        'DEFAULT_RENDERER_CLASSES': (
+            'rest_framework.renderers.JSONRenderer',
+            'rest_framework.renderers.BrowsableAPIRenderer',
+        ),
+        'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework_simplejwt.authentication.JWTAuthentication',
+        ]
+    }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -125,3 +161,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# use custom authentications
+AUTH_USER_MODEL = 'users.User'
