@@ -35,6 +35,9 @@ Application to manage share bill in apartments and houses
 ```
 # Generate Scheme for Swagger
 ```
-- python manage.py spectacular --file schema.yml
+- python manage.py spectacular --file schema.yml 
+- go to http://localhost:8000/api/schema/docs/#/
 ```
+
+
 # Deploy
