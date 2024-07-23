@@ -2,6 +2,9 @@ venvs/
 # database
 db.sqlite3
 
+# schemas
+schema.yml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
