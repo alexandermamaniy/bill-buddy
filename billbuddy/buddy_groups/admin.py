@@ -1,3 +1,4 @@
 from django.contrib import admin
+from buddy_groups.models import BuddyGroup
 
-# Register your models here.
+admin.site.register(BuddyGroup)

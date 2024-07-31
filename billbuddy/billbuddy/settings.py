@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     #LOCAL_APPS
     'users',
     'buddy_profiles',
+    'buddy_expenses',
+    'buddy_groups',
     #THRID_APPS
     'rest_framework',
     'corsheaders',

@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+
+from buddy_expenses.models import BuddyExpense
+
+admin.site.register(BuddyExpense)
