@@ -5,8 +5,7 @@ db.sqlite3
 # schemas
 schema.yml
 
-images/
-expenses/
+mediafiles/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
