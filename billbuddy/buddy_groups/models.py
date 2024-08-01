@@ -23,6 +23,10 @@ class GroupMembers(models.Model):
     modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
     delete_date = models.DateField(verbose_name='Deleted date', auto_now=True, auto_now_add=False)
 
+
+    def __str__(self):
+        return f'{self.buddy_profile_member.full_name} - {self.group_belong_to.name}'
+
 class GroupAdmins(models.Model):
     buddy_profile_admin = models.ForeignKey(BuddyProfile, on_delete=models.CASCADE)
     group_belong_to = models.ForeignKey(BuddyGroup, on_delete=models.CASCADE)
