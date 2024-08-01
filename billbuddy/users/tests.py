@@ -13,10 +13,10 @@ class JwtTestCase(APITestCase):
         self.url = reverse("token_obtain_pair")
         # create superuser
         self.superuser = User.objects.create_superuser(email='admin@admin.com', password="admin")
-        # self.superuser.save()
+        self.superuser.save()
         # create user
         self.user = User.objects.create_user(email='user@user.com', password="user")
-        # self.user.save()
+        self.user.save()
 
     def test_create_user(self):
         user = User.objects.get(email='user@user.com')

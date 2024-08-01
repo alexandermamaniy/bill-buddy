@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('title', models.CharField(max_length=255, verbose_name='title')),
                 ('description', models.CharField(blank=True, max_length=255, verbose_name='description')),
                 ('total_amount', models.DecimalField(decimal_places=3, max_digits=5, verbose_name='Total amount')),
-                ('currency', models.CharField(choices=[('NONE', 'NONE'), ('EUR', 'EUR'), ('USD', 'USD')], default=buddy_expenses.models.BuddyExpense.Currency['NONE'], max_length=64, verbose_name='Currencies')),
+                ('currency', models.CharField(choices=[('EUR', 'EUR'), ('USD', 'USD')], default=buddy_expenses.models.BuddyExpense.Currency['EUR'], max_length=64, verbose_name='Currencies')),
                 ('type_payment_distribution', models.CharField(choices=[('EQUALLY', 'EQ'), ('UNEQUALLY', 'UNEQ'), ('PERCENTAGE', 'PER')], default=buddy_expenses.models.BuddyExpense.PaymentDistribution['EQ'], max_length=64, verbose_name='Type of distribution for payments of expenses')),
                 ('evicende_picture_url', models.ImageField(blank=True, null=True, upload_to=buddy_expenses.models.upload_to)),
                 ('created_date', models.DateField(auto_now_add=True, verbose_name='Created date')),
