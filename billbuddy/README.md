@@ -21,7 +21,7 @@ Application to manage share bill in apartments and houses
 
 # Generate and restore backup
 ```
-- python manage.py dumpdata users  > seeders/data.json
+- python manage.py dumpdata > seeders/data.json
 - python manage.py loaddata seeders/data.json
 ```
 
