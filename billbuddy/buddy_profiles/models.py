@@ -18,6 +18,7 @@ class BuddyProfile(models.Model):
     class Meta:
         verbose_name = 'Buddy Profile'
         verbose_name_plural = 'Buddy Profiles'
+        ordering = ['full_name']
 
     REQUIRED_FIELDS = ['full_name']
 
