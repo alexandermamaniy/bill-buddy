@@ -1,14 +1,26 @@
 FROM python:3.9
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y default-mysql-client build-essential
+
+# Create and set working directory
 RUN mkdir /billbudy
 WORKDIR /billbudy
+
+# Copy project files into the container
 COPY . /billbudy/
-WORKDIR /billbudy/
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-RUN ls && pwd
-RUN python manage.py makemigrations
-RUN python manage.py migrate
-RUN python manage.py loaddata seeders/data.json
-RUN python manage.py spectacular --file schema.yml
+
+# Install Python dependencies
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
+
+# Expose the port the app runs on
 EXPOSE 8000
-CMD python manage.py runserver
+
+# Specify the user to run the container
+RUN useradd -m billbudyuser
+USER billbudyuser
+
+# Command to run the application
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
