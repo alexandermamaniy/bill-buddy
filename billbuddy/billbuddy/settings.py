@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     #LOCAL_APPS
+    'billbuddy',
     'users',
     'buddy_profiles',
     'buddy_expenses',
