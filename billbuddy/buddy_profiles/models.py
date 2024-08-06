@@ -3,7 +3,7 @@ import uuid
 from users.models import User
 
 def upload_to(instance, filename):
-    return f'images/{filename}'
+    return f'profiles/{filename}'
 
 class BuddyProfile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -21,4 +21,4 @@ class BuddyProfile(models.Model):
         ordering = ['full_name']
 
     def __str__(self):
-        return f'{self.full_name}'
+        return f'{self.full_name} - {self.user}'

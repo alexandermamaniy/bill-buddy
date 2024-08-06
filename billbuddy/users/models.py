@@ -32,8 +32,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default = False)
     created_date = models.DateTimeField(default=timezone.now)
     modified_date = models.DateTimeField(auto_now=True)
-    # created_date = models.DateField('Created date', auto_now=False, auto_now_add=True)
-    # modified_date = models.DateField('Modified date', auto_now=True, auto_now_add=False)
     deleted_date = models.DateField('Deleted date', null=True, blank=True)
     objects = UserManager()
 
@@ -42,7 +40,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = 'Users'
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
 
     def natural_key(self):
         return (self.email)
