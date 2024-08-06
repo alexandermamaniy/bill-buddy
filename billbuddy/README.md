@@ -1,44 +1,54 @@
 # BillBuddy
 Application to manage share bill in apartments and houses
 
-# Download, configuration and libraries installation
+## System Dependencies
+- docker
+- docker-compose
+
+## Project Download
 ```
-- git clone https://github.com/akey96/resume-manage.git
-- virtualenv --python=python3.9.13 venvs
-- source env/bin/activate
-- pip install -r requirements.txt
+- git clone https://github.com/alexandermamaniy/bill-buddy.git
 - cd billbuddy/
 ```
 
-# Run migration and server
+## Develop stage
+This stage allows developers make changes to the code and reflects the updates in real time.
 ```
-- python manage.py makemigration
-- python manage.py migrate
-- python manage.py createsuperuser
-- python manage.py runserver
+- docker-composer -f docker-compose.override.yml build
+- docker-composer -f docker-compose.override.yml up
+```
+
+### Run migration and server
+You can run generate the migrations and apply them and also create a superuser in order to crowded
+```
+- docker-composer -f docker-compose.override.yml exec web python manage.py makemigrations core users buddy_profiles buddy_groups buddy_expenses
+- docker-composer -f docker-compose.override.yml exec web python manage.py migrate
+- docker-composer -f docker-compose.override.yml exec web python manage.py createsuperuser
+- docker-composer -f docker-compose.override.yml exec web python manage.py runserver
 ```
 
 
-# Generate and restore backup
+### Generate and restore backup
+If you want to populate the database by seeders, you must not create a superuser by commands.  
 ```
-- python manage.py dumpdata > seeders/data.json
-- python manage.py loaddata seeders/data.json
-- docker-compose exec web python manage.py dumpdata > seeders/data2.json
-```
-
-# Run test
-```
-- python manage.py test
-```
-# Run interactive mode
-```
-- python manage.py shell
-```
-# Generate Scheme for Swagger
-```
-- python manage.py spectacular --file schema.yml 
-- go to http://localhost:8000/api/schema/docs/#/
+- docker-composer -f docker-compose.override.yml exec web python manage.py dumpdata > seeders/data.json
+- docker-composer -f docker-compose.override.yml exec web web python manage.py dumpdata > seeders/data2.json
 ```
 
+### Run test
+```
+- docker-composer -f docker-compose.override.yml exec web python manage.py test
+```
+### Run interactive mode
+```
+- docker-composer -f docker-compose.override.yml exec web python manage.py shell
+```
+### Generate Scheme for Swagger
+If you make any changes in the models, must run this command to update the Swagger's schemas  
+```
+- docker-composer -f docker-compose.override.yml exec web python manage.py spectacular --file schema.yml 
+```
+then go to http://localhost:8000/api/schema/docs/#/
 
-# Deploy
+
+## Deploy stage
