@@ -6,10 +6,8 @@ from django.utils import timezone
 class BuddyGroup(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField('Group name', max_length=255, blank=False, null=False)
-
     group_members = models.ManyToManyField(BuddyProfile, through="GroupMembers", related_name='group_members')
     group_admins = models.ManyToManyField(BuddyProfile, through="GroupAdmins", related_name='group_admins')
-
     created_date = models.DateTimeField(default=timezone.now)
     modified_date = models.DateTimeField(auto_now=True)
     deleted_date = models.DateTimeField('Deleted date', null=True, blank=True)
