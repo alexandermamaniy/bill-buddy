@@ -47,10 +47,11 @@ class BuddyExpense(models.Model):
     created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
     # expose this field
     modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField(verbose_name='Deleted date', auto_now=True, auto_now_add=False)
+    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
 
-    def __str__(self):
+def __str__(self):
         return f'{self.title} - {self.buddy_group}'
 
 class PayerPayments(models.Model):
@@ -63,9 +64,11 @@ class PayerPayments(models.Model):
     created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
     # expose this field
     modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField(verbose_name='Deleted date', auto_now=True, auto_now_add=False)
+    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
-    def __str__(self):
+
+def __str__(self):
         return f'{self.who_do_simple_payment.full_name} - {self.what_expense_belong_to.title}'
 
 class SettleParticipantExpenseUp(models.Model):
@@ -78,9 +81,11 @@ class SettleParticipantExpenseUp(models.Model):
     created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
     # expose this field
     modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField(verbose_name='Deleted date', auto_now=True, auto_now_add=False)
+    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
-    def __str__(self):
+
+def __str__(self):
         return f'{self.who_settle_simple_payment_up.full_name} - {self.what_expense_belong.title}'
 
 
@@ -93,8 +98,10 @@ class ParticipantsOfExpensePayment(models.Model):
 
     created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
     modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField(verbose_name='Deleted date', auto_now=True, auto_now_add=False)
+    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
-    def __str__(self):
+
+def __str__(self):
         return f'{self.group_member.full_name} - {self.expense.title}'
 

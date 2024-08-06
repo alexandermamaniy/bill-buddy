@@ -11,7 +11,8 @@ class BuddyGroup(models.Model):
 
     created_date = models.DateField('Created date', auto_now=False, auto_now_add=True)
     modified_date = models.DateField('Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField('Deleted date', auto_now=True, auto_now_add=False)
+    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.name}'
@@ -21,9 +22,11 @@ class GroupMembers(models.Model):
     group_belong_to = models.ForeignKey(BuddyGroup, on_delete=models.CASCADE)
     created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
     modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField(verbose_name='Deleted date', auto_now=True, auto_now_add=False)
+    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
-    def __str__(self):
+
+def __str__(self):
         return f'{self.buddy_profile_member.full_name} - {self.group_belong_to.name} '
 
 class GroupAdmins(models.Model):
@@ -32,5 +35,6 @@ class GroupAdmins(models.Model):
     is_admin_a_member = models.BooleanField(default=False)
     created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
     modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField(verbose_name='Deleted date', auto_now=True, auto_now_add=False)
+    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 

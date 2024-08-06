@@ -23,6 +23,7 @@ Application to manage share bill in apartments and houses
 ```
 - python manage.py dumpdata > seeders/data.json
 - python manage.py loaddata seeders/data.json
+- docker-compose exec web python manage.py dumpdata > seeders/data2.json
 ```
 
 # Run test

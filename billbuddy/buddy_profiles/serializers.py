@@ -17,7 +17,7 @@ class BuddyProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BuddyProfile
-        fields = ['id', 'user', 'full_name', 'picture_url', 'created_date', 'modified_date', 'delete_date']
+        fields = ['id', 'user', 'full_name', 'picture_url', 'created_date', 'modified_date', 'deleted_date', 'is_active']
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
@@ -31,11 +31,14 @@ class BuddyProfileSerializer(serializers.ModelSerializer):
 
         instance.full_name = validated_data.get('full_name', instance.full_name)
         instance.picture_url = validated_data.get('picture_url', instance.picture_url)
+        instance.is_active = validated_data.get('is_active', user.is_active)
         instance.save()
 
         user.email = user_data.get('email', user.email)
         if 'password' in user_data:
             user.set_password(user_data['password'])
+        user.is_active = user_data.get('is_active', user.is_active)
+        user.is_staff = user_data.get('is_staff', user.is_staff)
         user.save()
 
         return instance

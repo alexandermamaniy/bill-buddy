@@ -12,8 +12,8 @@ class BuddyProfile(models.Model):
     picture_url = models.ImageField(upload_to=upload_to, blank=True, null=True)
     created_date = models.DateField('Created date', auto_now=False, auto_now_add=True)
     modified_date = models.DateField('Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField('Deleted date', null=True, blank=True)
-
+    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = 'Buddy Profile'
