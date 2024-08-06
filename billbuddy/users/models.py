@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from pytz import all_timezones
-
+from core.models import TimeStampedModel
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, is_staff=False, is_superuser=False, **extra_fields):
         if not email:
@@ -26,14 +26,10 @@ class UserManager(BaseUserManager):
 
 
 # Create your models here.
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, TimeStampedModel):
 
     email = models.CharField(max_length = 255, unique = True)
-    is_active = models.BooleanField(default = True)
     is_staff = models.BooleanField(default = False)
-    created_date = models.DateTimeField(default=timezone.now)
-    modified_date = models.DateTimeField(auto_now=True)
-    deleted_date = models.DateTimeField('Deleted date', null=True, blank=True)
     timezone = models.CharField(max_length=100, choices=[(tz, tz) for tz in all_timezones], default='UTC')
 
     objects = UserManager()
