@@ -38,7 +38,6 @@ class BuddyProfileSerializer(serializers.ModelSerializer):
         if 'password' in user_data:
             user.set_password(user_data['password'])
         user.is_active = user_data.get('is_active', user.is_active)
-        user.is_staff = user_data.get('is_staff', user.is_staff)
         user.save()
 
         return instance

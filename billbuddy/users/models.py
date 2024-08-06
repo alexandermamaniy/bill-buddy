@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
+from pytz import all_timezones
 
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, is_staff=False, is_superuser=False, **extra_fields):
@@ -32,7 +33,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default = False)
     created_date = models.DateTimeField(default=timezone.now)
     modified_date = models.DateTimeField(auto_now=True)
-    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    deleted_date = models.DateTimeField('Deleted date', null=True, blank=True)
+    timezone = models.CharField(max_length=100, choices=[(tz, tz) for tz in all_timezones], default='UTC')
+
     objects = UserManager()
 
     class Meta:

@@ -1,8 +1,9 @@
 import enum
 from django.db import models
 import uuid
-from buddy_groups.models import BuddyGroup, GroupMembers
+from buddy_groups.models import BuddyGroup
 from buddy_profiles.models import BuddyProfile
+from django.utils import timezone
 
 def upload_to(instance, filename):
     return f'expenses/{filename}'
@@ -44,10 +45,9 @@ class BuddyExpense(models.Model):
     participants_of_expense_payment = models.ManyToManyField(BuddyProfile, through="ParticipantsOfExpensePayment", related_name='participants_of_expense_payment')
 
     # expose this field
-    created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
-    # expose this field
-    modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    modified_date = models.DateTimeField(auto_now=True)
+    deleted_date = models.DateTimeField('Deleted date', null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
 
@@ -61,10 +61,9 @@ class PayerPayments(models.Model):
     amount_payment = models.DecimalField(verbose_name='Amount payment', max_digits=8, decimal_places=3, default=0)
 
     # expose this field
-    created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
-    # expose this field
-    modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    modified_date = models.DateTimeField(auto_now=True)
+    deleted_date = models.DateTimeField('Deleted date', null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
 
@@ -78,10 +77,9 @@ class SettleParticipantExpenseUp(models.Model):
     amount_payment = models.DecimalField(verbose_name='Amount payment', max_digits=8, decimal_places=3, default=0)
 
     # expose this field
-    created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
-    # expose this field
-    modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    modified_date = models.DateTimeField(auto_now=True)
+    deleted_date = models.DateTimeField('Deleted date', null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
 
@@ -96,9 +94,9 @@ class ParticipantsOfExpensePayment(models.Model):
     amount_to_pay = models.DecimalField(verbose_name='Amount to pay', max_digits=8, decimal_places=3,  default=0)
     payment_balance = models.DecimalField(verbose_name='Payment balance', max_digits=8, decimal_places=3, default=0)
 
-    created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
-    modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    deleted_date = models.DateField('Deleted date', null=True, blank=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    modified_date = models.DateTimeField(auto_now=True)
+    deleted_date = models.DateTimeField('Deleted date', null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
 
