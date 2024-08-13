@@ -27,11 +27,14 @@ services:
           python manage.py makemigrations core users buddy_profiles buddy_groups buddy_expenses && \
           python manage.py migrate && \
           python manage.py flush --noinput && \
-          python manage.py loaddata seeders/data.json && \
+          python manage.py loaddata seeders/data.json &&
           python -m gunicorn --workers 3 --bind 0.0.0.0:8000 billbuddy.wsgi"
     container_name: buddy-bill
     networks:
       - network_main_net
+    volumes:
+      - .:/billbuddy
+      - /billbuddy/__pycache__/
     ports:
       - "8000:8000"
     depends_on:

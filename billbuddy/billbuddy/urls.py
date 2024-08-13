@@ -37,4 +37,4 @@ urlpatterns = [
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('api/schema/', SpectacularAPIView.as_view(), name="schema"),
     path('api/schema/docs/', SpectacularSwaggerView.as_view(url_name="schema")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
