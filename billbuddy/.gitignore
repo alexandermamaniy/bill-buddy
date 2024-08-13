@@ -1,3 +1,5 @@
+static/
+
 venvs/
 # database
 db.sqlite3

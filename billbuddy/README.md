@@ -78,3 +78,6 @@ then go to http://localhost:8000/api/schema/docs/#/
 
 
 ## Deploy stage
+
+
+          python manage.py collectstatic --noinput --ignore admin --ignore rest_framework  && \
