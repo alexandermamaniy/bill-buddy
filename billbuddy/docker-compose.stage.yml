@@ -12,6 +12,11 @@ services:
       - "3306:3306"
     volumes:
       - db_data_stage:/var/lib/mysql
+    healthcheck:  
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 2s
+      timeout: 20s
+      retries: 10
   web:
     build:
       context: "$PWD"
@@ -30,7 +35,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 networks:
   network_main_net:
     name: network_main_net
