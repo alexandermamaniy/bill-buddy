@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+    env_file: .env.stage
+    networks:
+      - network_main_net
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data_stage:/var/lib/mysql
+  web:
+    build:
+      context: "$PWD"
+      dockerfile: Dockerfile.stage
+    command: >
+      sh -c "
+          python manage.py wait_for_db && \
+          python manage.py makemigrations core users buddy_profiles buddy_groups buddy_expenses && \
+          python manage.py migrate && \
+          python manage.py flush --noinput && \
+          python manage.py loaddata seeders/data.json && \
+          python -m gunicorn --workers 3 --bind 0.0.0.0:8000 billbuddy.wsgi"
+    container_name: buddy-bill
+    networks:
+      - network_main_net
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+networks:
+  network_main_net:
+    name: network_main_net
+volumes:
+  db_data_stage:
+
