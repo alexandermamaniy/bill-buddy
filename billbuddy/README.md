@@ -13,44 +13,66 @@ Application to manage share bill in apartments and houses
 
 ## Develop stage
 This stage allows developers make changes to the code and reflects the updates in real time.
+
+### About ENVIRONMENTS
+you must create a file named ".env.dev" in the same directory of docker-compose file with the environment variables for the database and set up your database configurations
+
 ```
-- docker-composer -f docker-compose.override.yml build
-- docker-composer -f docker-compose.override.yml up
+MYSQL_DATABASE=mydatabase
+MYSQL_USER=myuser
+MYSQL_PASSWORD=mypassword
+MYSQL_ROOT_PASSWORD=rootpassword
 ```
 
-### Run migration and server
+### Executing the project with docker-compoose 
+```
+- docker-compose -f docker-compose.dev.yml build
+- docker-compose -f docker-compose.dev.yml up
+```
+
+### Run migrations and server dev
 You can run generate the migrations and apply them and also create a superuser in order to crowded
 ```
-- docker-composer -f docker-compose.override.yml exec web python manage.py makemigrations core users buddy_profiles buddy_groups buddy_expenses
-- docker-composer -f docker-compose.override.yml exec web python manage.py migrate
-- docker-composer -f docker-compose.override.yml exec web python manage.py createsuperuser
-- docker-composer -f docker-compose.override.yml exec web python manage.py runserver
+- docker-compose -f docker-compose.dev.yml exec web python manage.py makemigrations core users buddy_profiles buddy_groups buddy_expenses
+- docker-compose -f docker-compose.dev.yml exec web python manage.py migrate
+- docker-compose -f docker-compose.dev.yml exec web python manage.py runserver
 ```
 
+### About DATABASE
+You can set up your database with only one superuser for the admin interface or restore a seed database with some users and models as a sample of the app.
+You are only able to choose one of them, not both.
 
-### Generate and restore backup
+#### Creating a superuser
+```
+- docker-compose -f docker-compose.dev.yml exec web python manage.py createsuperuser
+```
+
+#### Restore a seed database
+```
+- docker-compose -f docker-compose.dev.yml exec web python manage.py flush --noinput
+- docker-compose -f docker-compose.dev.yml exec web python manage.py loaddata seeders/data.json
+```
+email: admin@admin.com \
+password: admin
+
+### Generating a seed database backup
 If you want to populate the database by seeders, you must not create a superuser by commands.  
 ```
-- docker-composer -f docker-compose.override.yml exec web python manage.py dumpdata > seeders/data.json
+- docker-compose -f docker-compose.dev.yml exec web python manage.py dumpdata > seeders/data.json
 ```
-```
-- docker-composer -f docker-compose.override.yml exec web web python manage.py flush --noinput
-- docker-composer -f docker-compose.override.yml exec web web python manage.py dumpdata > seeders/data2.json
-```
-
 
 ### Run test
 ```
-- docker-composer -f docker-compose.override.yml exec web python manage.py test
+- docker-compose -f docker-compose.dev.yml exec web python manage.py test
 ```
 ### Run interactive mode
 ```
-- docker-composer -f docker-compose.override.yml exec web python manage.py shell
+- docker-compose -f docker-compose.dev.yml exec web python manage.py shell
 ```
 ### Generate Scheme for Swagger
 If you make any changes in the models, must run this command to update the Swagger's schemas  
 ```
-- docker-composer -f docker-compose.override.yml exec web python manage.py spectacular --file schema.yml 
+- docker-compose -f docker-compose.dev.yml exec web python manage.py spectacular --file schema.yml 
 ```
 then go to http://localhost:8000/api/schema/docs/#/
 

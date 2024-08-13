@@ -6,14 +6,14 @@ services:
     image: mysql
     restart: always
     env_file: .env.dev
-    ports:
-      - "3306:3306"
     networks:
       net:
     volumes:
       - db_data:/var/lib/mysql
   web:
-    build: Dockerfile.dev
+    build:
+      context: "$PWD"
+      dockerfile: dockerfile.dev
     container_name: buddy-bill
     networks:
       net:
