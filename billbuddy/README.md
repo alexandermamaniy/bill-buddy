@@ -32,8 +32,12 @@ You can run generate the migrations and apply them and also create a superuser i
 If you want to populate the database by seeders, you must not create a superuser by commands.  
 ```
 - docker-composer -f docker-compose.override.yml exec web python manage.py dumpdata > seeders/data.json
+```
+```
+- docker-composer -f docker-compose.override.yml exec web web python manage.py flush --noinput
 - docker-composer -f docker-compose.override.yml exec web web python manage.py dumpdata > seeders/data2.json
 ```
+
 
 ### Run test
 ```

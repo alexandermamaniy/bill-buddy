@@ -1,16 +1,22 @@
 version: '3.8'
 
 services:
+  db:
+    container_name: db
+    image: mysql
+    restart: always
+    env_file: .env.dev
+    ports:
+      - "3306:3306"
+    networks:
+      net:
+    volumes:
+      - db_data:/var/lib/mysql
   web:
-    build: .
-    command: >
-      sh -c "
-      python manage.py wait_for_db &&
-      python manage.py makemigrations core users buddy_profiles buddy_groups buddy_expenses &&
-      python manage.py migrate &&
-      python manage.py flush --noinput &&
-      
-      python manage.py runserver 0.0.0.0:8000"
+    build: Dockerfile.dev
+    container_name: buddy-bill
+    networks:
+      net:
     volumes:
       - .:/billbudy
       - /billbudy/__pycache__/
@@ -18,19 +24,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
-
-  db:
-    image: mysql
-    restart: always
-    environment:
-      MYSQL_DATABASE: mydatabase
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: mypassword
-      MYSQL_ROOT_PASSWORD: rootpassword
-    ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-
+networks:
+  net:
 volumes:
   db_data:
