@@ -2,6 +2,9 @@ venvs/
 # database
 db.sqlite3
 
+.env.dev
+.env.stage
+
 # schemas
 schema.yml
 
