@@ -39,7 +39,7 @@ USER billbuddyuser
 
 RUN pip install gunicorn psycopg2-binary
 
-RUN export DJANGO_SETTINGS_MODULE=billbuddy.settings.production
-RUN export DJANGO_ENV=production
+ENV DJANGO_SETTINGS_MODULE billbuddy.settings.production
+ENV DJANGO_ENV production
 
 CMD python -m gunicorn --workers 3 --bind 0.0.0.0:8000 billbuddy.wsgi

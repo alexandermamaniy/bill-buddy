@@ -19,18 +19,18 @@ services:
       retries: 10
   web:
     environment:
-      - DJANGO_SETTINGS_MODULE=billbuddy.settings.staging
-      - DJANGO_ENV=staging
+      - DJANGO_SETTINGS_MODULE=billbuddy.settings.production
+      - DJANGO_ENV=production
     build:
       context: "$PWD"
-      dockerfile: Dockerfile.staging
+      dockerfile: Dockerfile.production
     command: >
       sh -c "
-          python manage.py wait_for_db --settings=billbuddy.settings.staging && \
-          python manage.py makemigrations core users buddy_profiles buddy_groups buddy_expenses --settings=billbuddy.settings.staging && \
-          python manage.py migrate --settings=billbuddy.settings.staging && \
-          python manage.py flush --noinput --settings=billbuddy.settings.staging && \
-          python manage.py loaddata seeders/data.json --settings=billbuddy.settings.staging && \
+          python manage.py wait_for_db --settings=billbuddy.settings.production && \
+          python manage.py makemigrations core users buddy_profiles buddy_groups buddy_expenses --settings=billbuddy.settings.production && \
+          python manage.py migrate --settings=billbuddy.settings.production && \
+          python manage.py flush --noinput --settings=billbuddy.settings.production && \
+          python manage.py loaddata seeders/data.json --settings=billbuddy.settings.production && \
           python manage.py collectstatic --noinput && \
           python -m gunicorn --workers 3 --bind 0.0.0.0:8000 billbuddy.wsgi"
     container_name: buddy-bill
