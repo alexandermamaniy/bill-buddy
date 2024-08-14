@@ -8,12 +8,15 @@ RUN apt-get update && \
 
 RUN useradd -m billbuddyuser
 
+USER root
 
 # Create and set working directory
 RUN mkdir -p /billbuddy/static && \
-    mkdir -p /billbuddy/media && \
-    chown -R billbuddyuser:billbuddyuser /billbuddy
+    mkdir -p /billbuddy/media
 
+RUN chown -R billbuddyuser:billbuddyuser /billbuddy
+
+RUN chmod -R 775 /billbuddy/static/
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -34,10 +37,11 @@ RUN pip install --upgrade pip && \
 # Expose the port the app runs on
 EXPOSE 8000
 
+RUN pip install gunicorn psycopg2-binary
+
 # Specify the user to run the container
 USER billbuddyuser
 
-RUN pip install gunicorn psycopg2-binary
 
 ENV DJANGO_SETTINGS_MODULE billbuddy.settings.production
 ENV DJANGO_ENV production

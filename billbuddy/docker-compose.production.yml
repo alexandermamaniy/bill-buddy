@@ -31,25 +31,28 @@ services:
           python manage.py migrate --settings=billbuddy.settings.production && \
           python manage.py flush --noinput --settings=billbuddy.settings.production && \
           python manage.py loaddata seeders/data.json --settings=billbuddy.settings.production && \
-          python manage.py collectstatic --noinput && \
-          python -m gunicorn --workers 3 --bind 0.0.0.0:8000 billbuddy.wsgi"
-    container_name: buddy-bill
+          python -m gunicorn --workers 3 --bind 0.0.0.0:8000 --timeout 120  billbuddy.wsgi:application"
+    container_name: buddy-bill-production
     networks:
       - network_main_net
+    restart: always
     volumes:
       - .:/billbuddy
       - /billbuddy/__pycache__/
+      - static_volume:/billbuddy/static:rw
+      - media_volume:/billbuddy/media:rw
     ports:
       - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
   nginx:
-    image: nginx:alpine
+    image: nginx
+    restart: always
     volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - static_volume:/billbuddy/static
-      - media_volume:/billbuddy/media
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - static_volume:/billbuddy/static:rw
+      - media_volume:/billbuddy/media:rw
     networks:
       - network_main_net
     ports:
