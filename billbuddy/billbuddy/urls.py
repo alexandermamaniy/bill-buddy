@@ -28,7 +28,7 @@ from rest_framework_simplejwt.views import (
 )
 
 
-
+print("roooot " + settings.STATIC_ROOT)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('buddy_profiles.urls')),
