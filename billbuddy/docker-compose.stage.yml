@@ -28,6 +28,7 @@ services:
           python manage.py migrate && \
           python manage.py flush --noinput && \
           python manage.py loaddata seeders/data.json && \
+          python manage.py collectstatic --noinput   && \
           python -m gunicorn --workers 3 --bind 0.0.0.0:8000 billbuddy.wsgi"
     container_name: buddy-bill
     networks:
