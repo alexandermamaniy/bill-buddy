@@ -8,8 +8,6 @@ services:
     env_file: .env.staging
     networks:
       - network_main_net
-    ports:
-      - "3306:3306"
     volumes:
       - db_data_stage:/var/lib/mysql
     healthcheck:
@@ -41,8 +39,6 @@ services:
       - /billbuddy/__pycache__/
       - static_volume:/billbuddy/static:rw
       - media_volume:/billbuddy/media:rw
-    ports:
-      - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
