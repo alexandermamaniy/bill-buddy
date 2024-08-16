@@ -1,20 +1,28 @@
 FROM python:3.9
 
 
+
 # Install system dependencies
 RUN apt-get update && \
     apt-get install -y default-mysql-client build-essential
 
 RUN useradd -m billbuddyuser
 
+USER root
 
 # Create and set working directory
 RUN mkdir -p /billbuddy/static && \
-    mkdir -p /billbuddy/media && \
-    chown -R billbuddyuser:billbuddyuser /billbuddy
+    mkdir -p /billbuddy/media
+
+RUN chown -R billbuddyuser:billbuddyuser /billbuddy
+
+RUN chmod -R 775 /billbuddy/static/
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
 # Create and set working directory
-
 WORKDIR /billbuddy
 
 # Copy project files into the container
@@ -29,9 +37,13 @@ RUN pip install --upgrade pip && \
 # Expose the port the app runs on
 EXPOSE 8000
 
+RUN pip install gunicorn psycopg2-binary
+
 # Specify the user to run the container
 USER billbuddyuser
 
-RUN pip install gunicorn psycopg2-binary
+
+ENV DJANGO_SETTINGS_MODULE billbuddy.settings.staging
+ENV DJANGO_ENV staging
 
 CMD python -m gunicorn --workers 3 --bind 0.0.0.0:8000 billbuddy.wsgi
