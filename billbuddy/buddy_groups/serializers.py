@@ -9,4 +9,4 @@ class BuddyProfileSerializer(ModelSerializer):
     class Meta:
         model = BuddyGroup
         # fields = ['album_name', 'artist', 'tracks']
-        exclude = ('created_date', 'modified_date', 'delete_date',)
+        # exclude = ('created_date', 'modified_date', 'deleted_date',)
