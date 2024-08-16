@@ -14,9 +14,11 @@ USER root
 RUN mkdir -p /billbuddy/static && \
     mkdir -p /billbuddy/media
 
+
 RUN chown -R billbuddyuser:billbuddyuser /billbuddy
 
-RUN chmod -R 775 /billbuddy/static/
+RUN chmod -R 775 /billbuddy/static
+RUN chmod -R 775 /billbuddy/media
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -32,6 +34,9 @@ COPY . /billbuddy/
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt
 
+# Collect static files
+
+RUN chown -R billbuddyuser:billbuddyuser /billbuddy
 
 # Expose the port the app runs on
 EXPOSE 8000
@@ -41,8 +46,9 @@ RUN pip install gunicorn psycopg2-binary
 # Specify the user to run the container
 USER billbuddyuser
 
-
 ENV DJANGO_SETTINGS_MODULE billbuddy.settings.staging
 ENV DJANGO_ENV staging
+
+RUN python manage.py collectstatic --noinput
 
 CMD python -m gunicorn --workers 3 --bind 0.0.0.0:8000 billbuddy.wsgi
