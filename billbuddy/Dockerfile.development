@@ -13,7 +13,6 @@ COPY . /billbudy/
 
 # Install Python dependencies
 RUN pip install --upgrade pip && \
-    pip install django-environ && \
     pip install -r requirements.txt
 
 # Expose the port the app runs on

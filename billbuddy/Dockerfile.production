@@ -30,7 +30,6 @@ COPY . /billbuddy/
 
 # Install Python dependencies
 RUN pip install --upgrade pip && \
-    pip install django-environ && \
     pip install -r requirements.txt
 
 
