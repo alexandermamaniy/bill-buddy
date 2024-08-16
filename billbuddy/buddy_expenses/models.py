@@ -1,14 +1,15 @@
 import enum
 from django.db import models
 import uuid
-from buddy_groups.models import BuddyGroup, GroupMembers
+from buddy_groups.models import BuddyGroup
 from buddy_profiles.models import BuddyProfile
+from core.models import TimeStampedModel
 
 def upload_to(instance, filename):
     return f'expenses/{filename}'
 
 
-class BuddyExpense(models.Model):
+class BuddyExpense(TimeStampedModel):
     @enum.unique
     class Currency(str, enum.Enum):
         EUR = 'EUR'
@@ -43,57 +44,36 @@ class BuddyExpense(models.Model):
     participants = models.ManyToManyField(BuddyProfile, through="SettleParticipantExpenseUp", related_name='participants_simplepayment')
     participants_of_expense_payment = models.ManyToManyField(BuddyProfile, through="ParticipantsOfExpensePayment", related_name='participants_of_expense_payment')
 
-    # expose this field
-    created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
-    # expose this field
-    modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField(verbose_name='Deleted date', auto_now=True, auto_now_add=False)
-
 
     def __str__(self):
         return f'{self.title} - {self.buddy_group}'
 
-class PayerPayments(models.Model):
+class PayerPayments(TimeStampedModel):
     who_do_simple_payment = models.ForeignKey(BuddyProfile, on_delete=models.CASCADE)
     what_expense_belong_to = models.ForeignKey(BuddyExpense, on_delete=models.CASCADE)
 
     amount_payment = models.DecimalField(verbose_name='Amount payment', max_digits=8, decimal_places=3, default=0)
 
-    # expose this field
-    created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
-    # expose this field
-    modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField(verbose_name='Deleted date', auto_now=True, auto_now_add=False)
-
     def __str__(self):
         return f'{self.who_do_simple_payment.full_name} - {self.what_expense_belong_to.title}'
 
-class SettleParticipantExpenseUp(models.Model):
+class SettleParticipantExpenseUp(TimeStampedModel):
     who_settle_simple_payment_up = models.ForeignKey(BuddyProfile, on_delete=models.CASCADE)
     what_expense_belong = models.ForeignKey(BuddyExpense, on_delete=models.CASCADE)
 
     amount_payment = models.DecimalField(verbose_name='Amount payment', max_digits=8, decimal_places=3, default=0)
 
-    # expose this field
-    created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
-    # expose this field
-    modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField(verbose_name='Deleted date', auto_now=True, auto_now_add=False)
 
     def __str__(self):
         return f'{self.who_settle_simple_payment_up.full_name} - {self.what_expense_belong.title}'
 
 
-class ParticipantsOfExpensePayment(models.Model):
+class ParticipantsOfExpensePayment(TimeStampedModel):
     group_member = models.ForeignKey(BuddyProfile, on_delete=models.CASCADE)
     expense = models.ForeignKey(BuddyExpense, on_delete=models.CASCADE)
     percentage_to_pay = models.IntegerField(verbose_name='Percentage to pay')
     amount_to_pay = models.DecimalField(verbose_name='Amount to pay', max_digits=8, decimal_places=3,  default=0)
     payment_balance = models.DecimalField(verbose_name='Payment balance', max_digits=8, decimal_places=3, default=0)
-
-    created_date = models.DateField(verbose_name='Created date', auto_now=False, auto_now_add=True)
-    modified_date = models.DateField(verbose_name='Modified date', auto_now=True, auto_now_add=False)
-    delete_date = models.DateField(verbose_name='Deleted date', auto_now=True, auto_now_add=False)
 
     def __str__(self):
         return f'{self.group_member.full_name} - {self.expense.title}'
