@@ -1,3 +1,6 @@
+.idea/bill-buddy.iml
+.idea/misc.xml
+
 mediafiles/
 */__pycache__/*
 *.pyc
@@ -8,6 +11,14 @@ __pycache__/
 *$py.class
 *.so
 .Python
+
+# Ignore PyCharm project files
+.idea/*
+
+# Ignore Python bytecode files
+**/__pycache__/**
+*.pyc
+
 build/
 develop-eggs/
 dist/
