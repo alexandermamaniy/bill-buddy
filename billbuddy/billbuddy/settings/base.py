@@ -4,20 +4,6 @@ import environ
 from datetime import timedelta
 
 
-# from drf_yasg import openapi
-#
-# SWAGGER_INFO = openapi.Info(
-#     title="Your Project API",
-#     default_version='v1',
-#     description="API documentation",
-#     terms_of_service="https://www.google.com/policies/terms/",
-#     contact=openapi.Contact(email="contact@yourproject.local"),
-#     license=openapi.License(name="BSD License"),
-# )
-#
-# SWAGGER_SETTINGS = {
-#     "DEFAULT_INFO": "billbuddy.settings.base.SWAGGER_INFO",
-# }
 
 # Initialize environment variables
 env = environ.Env()
@@ -65,7 +51,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'drf_spectacular',
-    'drf_yasg',
 ]
 
 MIDDLEWARE = [

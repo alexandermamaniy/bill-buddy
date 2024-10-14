@@ -40,15 +40,23 @@ class BuddyExpense(TimeStampedModel):
 
     evicende_picture_url = models.ImageField(upload_to=upload_to, blank=True, null=True)
 
-    payers = models.ManyToManyField(BuddyProfile, through="PayerPayments", related_name='payer_simplepayment')
-    participants = models.ManyToManyField(BuddyProfile, through="SettleParticipantExpenseUp", related_name='participants_simplepayment')
-    participants_of_expense_payment = models.ManyToManyField(BuddyProfile, through="ParticipantsOfExpensePayment", related_name='participants_of_expense_payment')
 
+    participants_of_expense_payment = models.ManyToManyField(BuddyProfile, through="ParticipantsOfExpensePayment", related_name='participants_of_expense_payment')
+    payments_made_it_by_payers = models.ManyToManyField(BuddyProfile, through="PaymentsMadeItByPayers", related_name='payments_made_it_by_payers')
+    settlement_by_participants = models.ManyToManyField(BuddyProfile, through="SettlementByParticipants", related_name='settlement_by_participants')
+
+    # participants_of_expense_payment = ParticipantsOfExpensePaymentSerializer(source='participantsofexpensepayment_set',
+    #                                                                          many=True, read_only=False)
+    # # participants_of_expense_payment = ParticipantsOfExpensePaymentSerializer(source='participantsofexpensepayment_set', many=True, read_only=False)
+    # payments_made_it_by_payers = PayerPaymentsSerializer(source='paymentsmadeitbypayers_set', many=True,
+    #                                                      read_only=False)
+    # settlement_by_participants = SettleParticipantExpenseUpSerializer(source='settleparticipantexpenseup_set',
+    #                                                                   many=True, read_only=False)
 
     def __str__(self):
         return f'{self.title} - {self.buddy_group}'
 
-class PayerPayments(TimeStampedModel):
+class PaymentsMadeItByPayers(TimeStampedModel):
     who_do_simple_payment = models.ForeignKey(BuddyProfile, on_delete=models.CASCADE)
     what_expense_belong_to = models.ForeignKey(BuddyExpense, on_delete=models.CASCADE)
 
@@ -57,7 +65,7 @@ class PayerPayments(TimeStampedModel):
     def __str__(self):
         return f'{self.who_do_simple_payment.full_name} - {self.what_expense_belong_to.title}'
 
-class SettleParticipantExpenseUp(TimeStampedModel):
+class SettlementByParticipants(TimeStampedModel):
     who_settle_simple_payment_up = models.ForeignKey(BuddyProfile, on_delete=models.CASCADE)
     what_expense_belong = models.ForeignKey(BuddyExpense, on_delete=models.CASCADE)
 
@@ -69,12 +77,12 @@ class SettleParticipantExpenseUp(TimeStampedModel):
 
 
 class ParticipantsOfExpensePayment(TimeStampedModel):
-    group_member = models.ForeignKey(BuddyProfile, on_delete=models.CASCADE)
+    participant_id = models.ForeignKey(BuddyProfile, on_delete=models.CASCADE)
     expense = models.ForeignKey(BuddyExpense, on_delete=models.CASCADE)
     percentage_to_pay = models.IntegerField(verbose_name='Percentage to pay')
     amount_to_pay = models.DecimalField(verbose_name='Amount to pay', max_digits=8, decimal_places=3,  default=0)
     payment_balance = models.DecimalField(verbose_name='Payment balance', max_digits=8, decimal_places=3, default=0)
 
     def __str__(self):
-        return f'{self.group_member.full_name} - {self.expense.title}'
+        return f'{self.participant_id.full_name} - {self.expense.title}'
 
