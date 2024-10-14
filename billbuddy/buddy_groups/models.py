@@ -24,5 +24,6 @@ class GroupMembers(TimeStampedModel):
 class GroupAdmins(TimeStampedModel):
     buddy_profile_admin = models.ForeignKey(BuddyProfile, on_delete=models.CASCADE)
     group_belong_to = models.ForeignKey(BuddyGroup, on_delete=models.CASCADE)
+    # revisar si eliminar este campo o no
     is_admin_a_member = models.BooleanField(default=False)
 

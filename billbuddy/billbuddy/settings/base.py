@@ -1,6 +1,23 @@
 import os
 from pathlib import Path
 import environ
+from datetime import timedelta
+
+
+# from drf_yasg import openapi
+#
+# SWAGGER_INFO = openapi.Info(
+#     title="Your Project API",
+#     default_version='v1',
+#     description="API documentation",
+#     terms_of_service="https://www.google.com/policies/terms/",
+#     contact=openapi.Contact(email="contact@yourproject.local"),
+#     license=openapi.License(name="BSD License"),
+# )
+#
+# SWAGGER_SETTINGS = {
+#     "DEFAULT_INFO": "billbuddy.settings.base.SWAGGER_INFO",
+# }
 
 # Initialize environment variables
 env = environ.Env()
@@ -48,6 +65,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'drf_spectacular',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -136,6 +154,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=365 * 1000),  # 1000 años
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=365 * 1000),  # 1000 años
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': env('JWT_SECRET_KEY', default='perris'),
+    'VERIFYING_KEY': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'JTI_CLAIM': 'jti',
+}
+
 REST_FRAMEWORK = {
     # 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -171,3 +205,51 @@ if TESTING:
             'rest_framework_simplejwt.authentication.JWTAuthentication',
         ]
     }
+
+
+
+# Logging configurations
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',  # Change this to INFO or WARNING
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'level': 'INFO',  # Change this to INFO or WARNING
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',  # Change this to INFO or WARNING
+            'propagate': True,
+        },
+    },
+}
+
+if ENVIRONMENT == 'production':
+    LOGGING['handlers']['file']['level'] = 'ERROR'
+    LOGGING['loggers']['django']['level'] = 'ERROR'
+elif ENVIRONMENT == 'testing':
+    LOGGING['handlers']['file']['filename'] = os.path.join(BASE_DIR, 'test.log')
+    LOGGING['loggers']['django']['level'] = 'DEBUG'
+elif ENVIRONMENT == 'development':
+    LOGGING['handlers']['file']['filename'] = os.path.join(BASE_DIR, 'develop.log')
+    LOGGING['loggers']['django']['level'] = 'DEBUG'

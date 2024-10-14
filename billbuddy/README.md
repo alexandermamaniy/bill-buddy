@@ -79,7 +79,7 @@ then go to http://localhost:8000/api/schema/docs/#/
 
 ## Deploy stage
 
-Allow to deploy the project in an production environment
+Allow to deploy the project in a production environment
 
 ```commandline
 docker-compose -f docker-compose.production.yml build
