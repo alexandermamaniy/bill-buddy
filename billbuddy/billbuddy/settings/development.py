@@ -8,6 +8,12 @@ CORS_ALLOW_ALL_ORIGINS = True
 # STATICFILES_DIRS = [
 #     BASE_DIR / "static",
 # ]
+
+CORS_ALLOWED_ORIGINS = [
+    "*"
+]
+
+
 REST_FRAMEWORK = {
     # 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
