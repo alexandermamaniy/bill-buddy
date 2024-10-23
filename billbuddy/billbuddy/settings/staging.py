@@ -1,6 +1,7 @@
 # staging.py
 
 from .base import *
+from .DEFAULT import DEFAULT_HEADERS
 
 DEBUG = False
 
@@ -8,5 +9,8 @@ DEBUG = False
 # STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 # STATIC_URL = '/static/'
 
-
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['your-staging-domain.com'])
+CORS_ALLOW_HEADERS = DEFAULT_HEADERS
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+    "http://127.0.0.1:4200",
+]

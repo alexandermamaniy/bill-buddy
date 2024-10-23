@@ -1,4 +1,4 @@
-from venv import logger
+
 from rest_framework import serializers
 
 from buddy_groups.models import BuddyGroup, GroupMembers, GroupAdmins
@@ -40,6 +40,7 @@ class BuddyGroupSerializer(ModelSerializer):
         fields = ['id', 'name', 'group_members', 'group_admins']
 
     def create(self, validated_data):
+
         group_members_data = self.context.get('group_members')
         group_admins_data = self.context.get('group_admins')
 
@@ -63,7 +64,7 @@ class BuddyGroupSerializer(ModelSerializer):
         group_admins_data = self.context.get('group_admins')
 
         if group_members_data is not None:
-            logger.info("ingres  + "+ str(group_admins_data))
+            self.logger.info("ingres  + "+ str(group_admins_data))
             instance.groupmembers_set.all().delete()
             for member_data in group_members_data:
                 buddy_profile_member = BuddyProfile.objects.get(id=member_data)

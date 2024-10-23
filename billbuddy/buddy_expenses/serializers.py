@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from buddy_expenses.models import BuddyExpense, PaymentsMadeItByPayers, SettlementByParticipants, ParticipantsOfExpensePayment
 from buddy_profiles.models import BuddyProfile
-import logging
-from venv import logger
 
 class PayerPaymentsSerializer(serializers.ModelSerializer):
     class Meta:

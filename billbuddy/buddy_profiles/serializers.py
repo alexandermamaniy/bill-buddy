@@ -5,7 +5,7 @@ from buddy_profiles.models import BuddyProfile
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'password', 'is_active', 'is_staff']
+        fields = ['id', 'email', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -17,7 +17,7 @@ class BuddyProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BuddyProfile
-        fields = ['id', 'user', 'full_name', 'picture_url', 'created_date', 'modified_date', 'deleted_date', 'is_active']
+        fields = ['id', 'user', 'full_name', 'picture_url', 'is_active']
 
     def create(self, validated_data):
         user_data = validated_data.pop('user')
@@ -41,3 +41,4 @@ class BuddyProfileSerializer(serializers.ModelSerializer):
         user.save()
 
         return instance
+

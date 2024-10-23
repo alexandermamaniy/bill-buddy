@@ -5,11 +5,14 @@ from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema
 from django.utils import timezone
 from rest_framework.response import Response
+import logging
 
 class BuddyGroupListCreateView(generics.ListCreateAPIView):
     queryset = BuddyGroup.objects.all()
     serializer_class = BuddyGroupSerializer
     permission_classes = [IsAuthenticated]
+
+    logger = logging.getLogger('django')
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -22,6 +25,8 @@ class BuddyGroupListCreateView(generics.ListCreateAPIView):
         responses={201: BuddyGroupSerializer}
     )
     def post(self, request, *args, **kwargs):
+        # self.logger.info("Data from view"+ str(request.user))
+        #
         return super().post(request, *args, **kwargs)
 
 class BuddyGroupRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
