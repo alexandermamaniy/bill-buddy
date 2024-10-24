@@ -42,3 +42,6 @@ class BuddyProfileSerializer(serializers.ModelSerializer):
 
         return instance
 
+class BuddyMemberOfAGroupRetrieveSerializer(serializers.Serializer):
+    members_of_group = BuddyProfileSerializer( many=True)
+    admins_of_group = BuddyProfileSerializer(  many=True)

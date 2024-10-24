@@ -21,6 +21,7 @@ class GroupMembers(TimeStampedModel):
         return f'{self.buddy_profile_member.full_name} - {self.group_belong_to.name} '
 
 
+
 class GroupAdmins(TimeStampedModel):
     buddy_profile_admin = models.ForeignKey(BuddyProfile, on_delete=models.CASCADE)
     group_belong_to = models.ForeignKey(BuddyGroup, on_delete=models.CASCADE)

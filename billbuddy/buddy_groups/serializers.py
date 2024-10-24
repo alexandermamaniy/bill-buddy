@@ -1,5 +1,6 @@
 
 from rest_framework import serializers
+from tutorial.quickstart.serializers import GroupSerializer
 
 from buddy_groups.models import BuddyGroup, GroupMembers, GroupAdmins
 from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
@@ -28,7 +29,6 @@ class BuddyGroupRequestSerializer(serializers.Serializer):
     )
 
 
-
 class BuddyGroupSerializer(ModelSerializer):
     group_members = GroupMembersSerializer(source='groupmembers_set', many=True, read_only=True)
     group_admins = GroupAdminsSerializer(source='groupadmins_set', many=True, read_only=True)
@@ -37,7 +37,8 @@ class BuddyGroupSerializer(ModelSerializer):
 
     class Meta:
         model = BuddyGroup
-        fields = ['id', 'name', 'group_members', 'group_admins']
+        fields = ['id', 'name', 'group_members', 'group_admins', 'created_date']
+
 
     def create(self, validated_data):
 
@@ -82,3 +83,7 @@ class BuddyGroupSerializer(ModelSerializer):
 
         instance.save()
         return instance
+
+class BuddyGroupRetrieveRequestSerializer(serializers.Serializer):
+    groups_that_belong = BuddyGroupSerializer( many=True)
+    groups_that_manage = BuddyGroupSerializer(  many=True)

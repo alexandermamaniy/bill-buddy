@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from buddy_expenses.models import BuddyExpense, PaymentsMadeItByPayers, SettlementByParticipants, ParticipantsOfExpensePayment
 from buddy_profiles.models import BuddyProfile
 
@@ -70,3 +71,6 @@ class BuddyExpenseSerializer(serializers.ModelSerializer):
     #     instance.save()
     #
     #     return  instance
+
+class BuddyExpensesListSerializer(serializers.Serializer):
+    expenses = BuddyExpenseSerializer(many=True)

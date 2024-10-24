@@ -1,11 +1,17 @@
 from rest_framework import generics, status
+from rest_framework.generics import RetrieveAPIView, ListAPIView
+from yaml import serialize
+
 from buddy_groups.models import BuddyGroup, GroupAdmins, GroupMembers
-from buddy_groups.serializers import BuddyGroupSerializer, BuddyGroupRequestSerializer
+from buddy_groups.serializers import BuddyGroupSerializer, BuddyGroupRequestSerializer, BuddyGroupRetrieveRequestSerializer
 from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema
 from django.utils import timezone
 from rest_framework.response import Response
 import logging
+
+from buddy_profiles.models import BuddyProfile
+
 
 class BuddyGroupListCreateView(generics.ListCreateAPIView):
     queryset = BuddyGroup.objects.all()
@@ -73,3 +79,28 @@ class BuddyGroupRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView)
             member_s.save()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class RetrieveGroupAPIView(RetrieveAPIView):
+    serializer_class = BuddyGroupRetrieveRequestSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        user_authenticated = BuddyProfile.objects.get(user=self.request.user)
+        group_members = BuddyGroup.objects.filter(groupmembers__buddy_profile_member=user_authenticated)
+        group_admins = BuddyGroup.objects.filter(groupadmins__buddy_profile_admin=user_authenticated)
+        obj =  {'groups_that_belong':group_members, 'groups_that_manage':group_admins}
+        # self.check_object_permissions(self.request, obj)
+        return obj
+
+    def retrieve(self, request, *args, **kwargs):
+        # Get the model instance
+        queryset = self.get_object()
+
+        # Instantiate the serializer
+        serializer = self.get_serializer(queryset, context={'request': request})
+
+        # serializer = BuddyGroupRetrieveRequestSerializer(queryset, context={'request': request})
+
+        # Return the serialized data
+        return Response(serializer.data)
+
