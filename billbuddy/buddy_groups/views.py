@@ -1,40 +1,17 @@
 from rest_framework import generics, status
-from rest_framework.generics import RetrieveAPIView, ListAPIView
-from yaml import serialize
+from rest_framework.generics import RetrieveAPIView, ListAPIView, CreateAPIView
 
 from buddy_groups.models import BuddyGroup, GroupAdmins, GroupMembers
-from buddy_groups.serializers import BuddyGroupSerializer, BuddyGroupRequestSerializer, BuddyGroupRetrieveRequestSerializer
+from buddy_groups.serializers import BuddyGroupSerializer, BuddyGroupRequestSerializer, \
+    BuddyGroupRetrieveRequestSerializer, CreateGroupUserAuthenticatedSerializer
 from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema
 from django.utils import timezone
 from rest_framework.response import Response
-import logging
-
 from buddy_profiles.models import BuddyProfile
 
 
-class BuddyGroupListCreateView(generics.ListCreateAPIView):
-    queryset = BuddyGroup.objects.all()
-    serializer_class = BuddyGroupSerializer
-    permission_classes = [IsAuthenticated]
-
-    logger = logging.getLogger('django')
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['group_members'] = self.request.data.get('group_members')
-        context['group_admins'] = self.request.data.get('group_admins')
-        return context
-
-    @extend_schema(
-        request=BuddyGroupRequestSerializer,
-        responses={201: BuddyGroupSerializer}
-    )
-    def post(self, request, *args, **kwargs):
-        # self.logger.info("Data from view"+ str(request.user))
-        #
-        return super().post(request, *args, **kwargs)
-
+# modified this endpoint
 class BuddyGroupRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BuddyGroup.objects.all()
     serializer_class = BuddyGroupSerializer
@@ -92,15 +69,19 @@ class RetrieveGroupAPIView(RetrieveAPIView):
         # self.check_object_permissions(self.request, obj)
         return obj
 
-    def retrieve(self, request, *args, **kwargs):
-        # Get the model instance
-        queryset = self.get_object()
+class CreateGroupOfUserAuthenticated(CreateAPIView):
+    serializer_class = CreateGroupUserAuthenticatedSerializer
+    permission_classes = [IsAuthenticated]
 
-        # Instantiate the serializer
-        serializer = self.get_serializer(queryset, context={'request': request})
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['group_members'] = self.request.data.get('group_members')
+        context['admin'] = self.request.user
+        return context
 
-        # serializer = BuddyGroupRetrieveRequestSerializer(queryset, context={'request': request})
-
-        # Return the serialized data
-        return Response(serializer.data)
-
+    @extend_schema(
+        request=BuddyGroupRequestSerializer,
+        responses={201: CreateGroupUserAuthenticatedSerializer}
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)

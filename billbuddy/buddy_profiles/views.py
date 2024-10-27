@@ -50,9 +50,9 @@ class RetrieveMemberAndAdminsOfAGroupAPIView(RetrieveAPIView):
     def get_object(self):
         #Validate that user authenticated must be an admin of the group
         # user_authenticated = BuddyProfile.objects.get(user=self.request.user)
-        product_id = self.kwargs.get('pk')
-        members_of_group = BuddyProfile.objects.filter(group_members__id=product_id)
-        admins_of_group = BuddyProfile.objects.filter(group_admins__id=product_id)
+        group_id = self.kwargs.get('pk')
+        members_of_group = BuddyProfile.objects.filter(group_members__id=group_id)
+        admins_of_group = BuddyProfile.objects.filter(group_admins__id=group_id)
 
         obj =  {'members_of_group':members_of_group, 'admins_of_group':admins_of_group}
         self.check_object_permissions(self.request, obj)

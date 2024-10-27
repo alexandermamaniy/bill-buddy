@@ -1,9 +1,9 @@
 from rest_framework import generics, status
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView
 from django.db.models import Q
 
 from buddy_expenses.models import BuddyExpense
-from buddy_expenses.serializers import BuddyExpenseSerializer, BuddyExpensesListSerializer
+from buddy_expenses.serializers import BuddyExpenseSerializer, BuddyExpenseCreateSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from rest_framework.response import Response
@@ -53,20 +53,21 @@ class BuddyExpenseRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
 
 
 class BuddyExpensesOfOneProfileListAPIView(ListAPIView):
-    serializer_class = BuddyExpensesListSerializer
+    serializer_class = BuddyExpenseSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+
         user_authenticated = BuddyProfile.objects.get(user=self.request.user)
-        expenses = BuddyExpense.objects.filter(Q(participants_of_expense_payment=user_authenticated) | Q(payments_made_it_by_payers=user_authenticated))
-        return {'expenses': expenses}
+        expenses = BuddyExpense.objects.filter(Q(participants_of_expense_payment=user_authenticated) )
+        return expenses
 
     def list(self, request, *args, **kwargs):
         # Get the queryset
         queryset = self.get_queryset()
 
         # Instantiate the serializer
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = self.get_serializer(queryset, context={'request': request}, many=True)
 
         # Return the serialized data
         return Response(serializer.data)
@@ -75,23 +76,39 @@ class BuddyExpensesOfOneProfileListAPIView(ListAPIView):
 
 
 class BuddyExpensesOfOneGroupListAPIView(ListAPIView):
-    serializer_class = BuddyExpensesListSerializer
+    serializer_class = BuddyExpenseSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         # user_authenticated = BuddyProfile.objects.get(user=self.request.user)
-        
+        group_id = self.kwargs.get('pk')
         # replace for Group id
-        expenses = BuddyExpense.objects.filter(buddy_group_id="dd904a5a-7718-4f05-bc57-9531c218f918")
-        return {'expenses': expenses}
+        expenses = BuddyExpense.objects.filter(buddy_group_id=group_id)
+        return expenses
 
     def list(self, request, *args, **kwargs):
         # Get the queryset
         queryset = self.get_queryset()
 
         # Instantiate the serializer
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = self.get_serializer(queryset, context={'request': request}, many=True)
 
         # Return the serialized data
         return Response(serializer.data)
 
+
+class CreateExpenseOfUserAuthenticated(CreateAPIView):
+    serializer_class = BuddyExpenseCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['admin'] = self.request.user
+        return context
+
+    @extend_schema(
+        request=BuddyExpenseCreateSerializer,
+        responses={201: BuddyExpenseSerializer}
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)

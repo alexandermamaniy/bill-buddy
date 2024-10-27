@@ -25,16 +25,14 @@ class BuddyGroupRequestSerializer(serializers.Serializer):
     )
     group_admins = serializers.ListField(
         child=serializers.UUIDField(format='hex_verbose'),
-        help_text='List of admin IDs'
+        help_text='List of admin, if you dont pass this argument empty, create with autenticated user  as admin'
     )
 
 
 class BuddyGroupSerializer(ModelSerializer):
     group_members = GroupMembersSerializer(source='groupmembers_set', many=True, read_only=True)
     group_admins = GroupAdminsSerializer(source='groupadmins_set', many=True, read_only=True)
-
     logger = logging.getLogger('django')
-
     class Meta:
         model = BuddyGroup
         fields = ['id', 'name', 'group_members', 'group_admins', 'created_date']
@@ -83,6 +81,32 @@ class BuddyGroupSerializer(ModelSerializer):
 
         instance.save()
         return instance
+
+class CreateGroupUserAuthenticatedSerializer(ModelSerializer):
+    group_members = GroupMembersSerializer(source='groupmembers_set', many=True, read_only=True)
+    group_admins = GroupAdminsSerializer(source='groupadmins_set', many=True, read_only=True)
+    logger = logging.getLogger('django')
+
+    class Meta:
+        model = BuddyGroup
+        fields = ['id', 'name', 'group_members', 'group_admins', 'created_date']
+
+    def create(self, validated_data):
+
+        group_members_data = self.context.get('group_members')
+        group_admin = self.context.get('admin')
+
+        buddy_group = BuddyGroup.objects.create(**validated_data)
+
+        for member_data in group_members_data:
+            buddy_profile_member = BuddyProfile.objects.get(id=member_data)
+            GroupMembers.objects.create(group_belong_to=buddy_group, buddy_profile_member=buddy_profile_member)
+
+        buddy_profile_admin = BuddyProfile.objects.get(user=group_admin)
+        GroupAdmins.objects.create(group_belong_to=buddy_group, buddy_profile_admin=buddy_profile_admin)
+
+        return buddy_group
+
 
 class BuddyGroupRetrieveRequestSerializer(serializers.Serializer):
     groups_that_belong = BuddyGroupSerializer( many=True)

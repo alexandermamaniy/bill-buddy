@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from buddy_expenses.models import BuddyExpense, PaymentsMadeItByPayers, SettlementByParticipants, ParticipantsOfExpensePayment
+from buddy_groups.admin import buddy_members_inline
 from buddy_profiles.models import BuddyProfile
 
 class PayerPaymentsSerializer(serializers.ModelSerializer):
@@ -29,7 +30,7 @@ class BuddyExpenseSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'buddy_group', 'description', 'total_amount',
             'currency', 'type_payment_distribution', 'evicende_picture_url',
-            'payments_made_it_by_payers', 'settlement_by_participants', 'participants_of_expense_payment'
+            'payments_made_it_by_payers', 'settlement_by_participants', 'participants_of_expense_payment', 'created_date'
         ]
 
     def create(self, validated_data):
@@ -72,5 +73,40 @@ class BuddyExpenseSerializer(serializers.ModelSerializer):
     #
     #     return  instance
 
-class BuddyExpensesListSerializer(serializers.Serializer):
-    expenses = BuddyExpenseSerializer(many=True)
+
+
+class BuddyExpenseCreateSerializer(serializers.ModelSerializer):
+    participants_of_expense_payment = ParticipantsOfExpensePaymentSerializer(source='participantsofexpensepayment_set',
+                                                                             many=True, read_only=False)
+
+    class Meta:
+        model = BuddyExpense
+        fields = [
+            'id', 'title', 'buddy_group', 'description', 'total_amount',
+            'currency', 'participants_of_expense_payment'
+        ]
+
+    def create(self, validated_data):
+        participants_of_expense_payment_data = validated_data.pop('participantsofexpensepayment_set', [])
+
+        buddy_expense = BuddyExpense.objects.create(**validated_data)
+
+        group_admin = self.context.get('admin')
+        buddy_profile_admin = BuddyProfile.objects.get(user=group_admin)
+
+
+        PaymentsMadeItByPayers.objects.create(
+            what_expense_belong_to=buddy_expense,
+            who_do_simple_payment=buddy_profile_admin,
+            amount_payment=validated_data.pop('total_amount'))
+
+
+        for participant_of_expense_payment_data in participants_of_expense_payment_data:
+            ParticipantsOfExpensePayment.objects.create(
+                expense=buddy_expense,
+                participant_id=participant_of_expense_payment_data['participant_id'],
+                percentage_to_pay=participant_of_expense_payment_data['percentage_to_pay'],
+                amount_to_pay=participant_of_expense_payment_data['amount_to_pay'],
+                payment_balance=participant_of_expense_payment_data['payment_balance']
+            )
+        return buddy_expense
